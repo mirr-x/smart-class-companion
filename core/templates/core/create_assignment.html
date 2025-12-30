@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Create Assignment - {{ class.name }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Create New Assignment</h1>
+        <p class="subtitle">Add an assignment to {{ class.name }}</p>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Assignment Title *</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Instructions *</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.due_date.id_for_label }}">Due Date *</label>
+                    {{ form.due_date }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.max_points.id_for_label }}">Max Points</label>
+                    {{ form.max_points }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        {{ form.allow_late_submission }}
+                        Allow late submission
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        {{ form.is_published }}
+                        Published (visible to students)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'class_detail' class.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Assignment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

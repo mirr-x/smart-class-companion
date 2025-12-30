@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <section class="section">
+        <h1 class="welcome-title">Welcome, {{ user.first_name }}!</h1>
+    </section>
+
+    <!-- Urgent Items Row -->
+    {% if missing_assignments or upcoming_assignments %}
+    <div class="dashboard-grid-layout">
+        {% if missing_assignments %}
+        <div class="half-column">
+            <section class="section alert-section">
+                <h3>⚠️ Missing Assignments</h3>
+                <div class="task-list">
+                    {% for assignment in missing_assignments %}
+                    <a href="{% url 'assignment_detail' assignment.id %}" class="task-item urgent">
+                        <div class="task-info">
+                            <strong>{{ assignment.title }}</strong>
+                            <span>{{ assignment.class_assignment.name }}</span>
+                        </div>
+                        <span class="due-date">Due: {{ assignment.due_date|date:"M d" }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+        {% endif %}
+
+        {% if upcoming_assignments %}
+        <div class="half-column">
+            <section class="section">
+                <h3>📅 Upcoming Deadlines</h3>
+                <div class="task-list">
+                    {% for assignment in upcoming_assignments %}
+                    <a href="{% url 'assignment_detail' assignment.id %}" class="task-item">
+                        <div class="task-info">
+                            <strong>{{ assignment.title }}</strong>
+                            <span>{{ assignment.class_assignment.name }}</span>
+                        </div>
+                        <span class="due-date">{{ assignment.due_date|date:"D, M d" }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="dashboard-grid-layout">
+        <!-- Classes -->
+        <div class="main-column">
+            <section class="section">
+                <div class="section-header">
+                    <h2>My Classes</h2>
+                    <a href="{% url 'join_class' %}" class="btn btn-primary">+ Join Class</a>
+                </div>
+                {% if enrollments %}
+                <div class="class-grid">
+                    {% for enrollment in enrollments %}
+                    <a href="{% url 'class_detail' enrollment.class_enrolled.id %}" class="class-card-link">
+                        <div class="class-card">
+                            <h3>{{ enrollment.class_enrolled.name }}</h3>
+                            <p>{{ enrollment.class_enrolled.subject }}</p>
+                            <p class="teacher-name">Teacher: {{ enrollment.class_enrolled.teacher.get_full_name }}</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">No classes yet. Join a class using a class code!</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <!-- Recent Lessons -->
+        <div class="side-column">
+            <section class="section">
+                <h3>Start Learning</h3>
+                {% if recent_lessons %}
+                <div class="activity-feed">
+                    {% for lesson in recent_lessons %}
+                    <a href="{% url 'lesson_detail' lesson.id %}" class="activity-item link">
+                        <small class="text-muted">{{ lesson.created_at|timesince }} ago</small>
+                        <p><strong>{{ lesson.title }}</strong></p>
+                        <div class="activity-meta">
+                            {{ lesson.class_lesson.name }}
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No recent lessons.</p>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

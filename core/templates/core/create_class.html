@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Create Class - Smart Class Companion{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Create New Class</h1>
+        <p class="subtitle">Set up a new class for your students</p>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Class Name *</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <span class="error">{{ form.name.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.subject.id_for_label }}">Subject</label>
+                {{ form.subject }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.room.id_for_label }}">Room</label>
+                {{ form.room }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Class</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

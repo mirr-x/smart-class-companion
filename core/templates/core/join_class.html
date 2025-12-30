@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Join Class - Smart Class Companion{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Join a Class</h1>
+        <p class="subtitle">Enter the class code provided by your teacher</p>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.class_code.id_for_label }}">Class Code *</label>
+                {{ form.class_code }}
+                {% if form.class_code.errors %}
+                <span class="error">{{ form.class_code.errors.0 }}</span>
+                {% endif %}
+                <small class="form-help">Ask your teacher for the 6-character class code</small>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Join Class</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

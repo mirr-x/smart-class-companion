@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Create Lesson - {{ class.name }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Create New Lesson</h1>
+        <p class="subtitle">Add a lesson to {{ class.name }}</p>
+
+        <form method="post" enctype="multipart/form-data" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Lesson Title *</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description/Content *</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.order.id_for_label }}">Order</label>
+                    {{ form.order }}
+                    <small class="form-help">Display order (0 = first)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.is_published.id_for_label }}">
+                        <input type="checkbox" name="is_published" id="{{ form.is_published.id_for_label }}" checked>
+                        Published (visible to students)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="files">Attach Files (optional)</label>
+                <input type="file" name="files" id="files" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip">
+                <small class="form-help">You can select multiple files. Supported: PDF, Word, PowerPoint, Text,
+                    ZIP</small>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'class_detail' class.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Lesson</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

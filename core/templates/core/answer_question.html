@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Answer Question{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Answer Student Question</h1>
+
+        <div class="question-preview">
+            <div class="question-header-preview">
+                <strong>{{ question.student.get_full_name }}</strong>
+                <small>{{ question.created_at|timesince }} ago</small>
+            </div>
+            <p class="question-text-preview">{{ question.question_text }}</p>
+            <small class="lesson-link">From: <a href="{% url 'lesson_detail' question.lesson.id %}">{{
+                    question.lesson.title }}</a></small>
+        </div>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.answer_text.id_for_label }}">Your Answer *</label>
+                {{ form.answer_text }}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'lesson_detail' question.lesson.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Post Answer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

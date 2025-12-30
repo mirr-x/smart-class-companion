@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ lesson.title }} - Smart Class Companion{% endblock %}
+
+{% block content %}
+<div class="lesson-container">
+    <div class="lesson-header">
+        <div>
+            <nav class="breadcrumb">
+                <a href="{% url 'class_detail' class.id %}">{{ class.name }}</a> / Lesson
+            </nav>
+            <h1>{{ lesson.title }}</h1>
+            <p class="lesson-meta">Posted {{ lesson.created_at|timesince }} ago</p>
+        </div>
+
+        {% if user.role == 'TEACHER' %}
+        <div class="lesson-actions">
+            <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="lesson-content">
+        <div class="section">
+            <h2>{{ lesson.title }}</h2>
+            <div class="lesson-description">
+                {{ lesson.description|linebreaks }}
+            </div>
+        </div>
+
+        {% if files %}
+        <div class="section">
+            <h3>📎 Attachments</h3>
+            <div class="files-list">
+                {% for file in files %}
+                <div class="file-item">
+                    <div class="file-info">
+                        <strong>{{ file.file_name }}</strong>
+                        <small>{{ file.file_size|filesizeformat }} • Uploaded {{ file.uploaded_at|timesince }}
+                            ago</small>
+                    </div>
+                    <a href="{{ file.file.url }}" download class="btn btn-primary btn-sm">Download</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="section">
+            <div class="section-header">
+                <h3>💬 Questions & Answers ({{ questions.count }})</h3>
+            </div>
+
+            {% if user.role == 'STUDENT' and question_form %}
+            <div class="question-form-box">
+                <h4>Ask a Question</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ question_form.question_text }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Question</button>
+                </form>
+            </div>
+            {% endif %}
+
+            {% if questions %}
+            <div class="questions-thread">
+                {% for question in questions %}
+                <div class="question-card">
+                    <div class="question-header">
+                        <strong>{{ question.student.get_full_name }}</strong>
+                        <small>{{ question.created_at|timesince }} ago</small>
+                    </div>
+                    <p class="question-text">{{ question.question_text }}</p>
+
+                    {% if question.is_answered %}
+                    <div class="answer-box">
+                        <div class="answer-header">
+                            <strong>{{ question.answer.teacher.get_full_name }}</strong> (Teacher)
+                            <small>{{ question.answer.created_at|timesince }} ago</small>
+                        </div>
+                        <p>{{ question.answer.answer_text }}</p>
+                    </div>
+                    {% else %}
+                    {% if user.role == 'TEACHER' %}
+                    <a href="{% url 'answer_question' question.id %}" class="btn btn-sm btn-primary">Answer</a>
+                    {% else %}
+                    <span class="unanswered-badge">Awaiting answer</span>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-state">No questions yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

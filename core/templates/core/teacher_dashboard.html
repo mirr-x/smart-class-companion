@@ -1,0 +1,105 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <section class="section">
+        <h1 class="welcome-title">Welcome back, {{ user.get_full_name }}!</h1>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>My Classes</h3>
+                <p class="stat-number">{{ classes.count }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Pending Grading</h3>
+                <p class="stat-number {% if pending_grading > 0 %}text-warning{% endif %}">{{ pending_grading }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Unanswered Questions</h3>
+                <p class="stat-number {% if unanswered_questions > 0 %}text-danger{% endif %}">{{ unanswered_questions }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Items -->
+    {% if pending_grading > 0 or unanswered_questions > 0 %}
+    <section class="section">
+        <div class="alert-box">
+            <h2>⚠️ Action Items</h2>
+            <div class="action-list">
+                {% if pending_grading > 0 %}
+                <div class="action-item">
+                    <span>📝 You have <strong>{{ pending_grading }}</strong> submission(s) waiting for grades.</span>
+                </div>
+                {% endif %}
+                {% if unanswered_questions > 0 %}
+                <div class="action-item">
+                    <span>💬 You have <strong>{{ unanswered_questions }}</strong> unanswered question(s).</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <div class="dashboard-grid-layout">
+        <!-- Main Column: Classes -->
+        <div class="main-column">
+            <section class="section">
+                <div class="section-header">
+                    <h2>My Classes</h2>
+                    <a href="{% url 'create_class' %}" class="btn btn-primary">+ Create Class</a>
+                </div>
+                {% if classes %}
+                <div class="class-grid">
+                    {% for class in classes %}
+                    <a href="{% url 'class_detail' class.id %}" class="class-card-link">
+                        <div class="class-card">
+                            <h3>{{ class.name }}</h3>
+                            <p>{{ class.subject }}</p>
+                            <p class="class-code">Code: <strong>{{ class.class_code }}</strong></p>
+                            <div class="class-footer">
+                                <span>👥 {{ class.student_count }} Students</span>
+                                <span>📝 {{ class.assignment_count }} Assign.</span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">No classes yet. Create your first class to get started!</p>
+                {% endif %}
+            </section>
+        </div>
+
+        <!-- Side Column: Recent Activity -->
+        <div class="side-column">
+            <section class="section">
+                <h3>Recent Submissions</h3>
+                {% if recent_submissions %}
+                <div class="activity-feed">
+                    {% for submission in recent_submissions %}
+                    <div class="activity-item">
+                        <small class="text-muted">{{ submission.submitted_at|timesince }} ago</small>
+                        <p><strong>{{ submission.student.get_full_name }}</strong> submitted
+                            <a href="{% url 'assignment_detail' submission.assignment.id %}">{{
+                                submission.assignment.title }}</a>
+                        </p>
+                        <div class="activity-meta">
+                            Class: {{ submission.assignment.class_assignment.name }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No recent activity.</p>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

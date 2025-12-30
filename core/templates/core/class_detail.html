@@ -1,0 +1,125 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ class.name }} - Smart Class Companion{% endblock %}
+
+{% block content %}
+<div class="class-detail-container">
+    <div class="class-header">
+        <div class="class-info">
+            <h1>{{ class.name }}</h1>
+            <p class="class-subject">{{ class.subject }}{% if class.room %} • Room {{ class.room }}{% endif %}</p>
+            <p class="class-teacher">Teacher: {{ class.teacher.get_full_name }}</p>
+
+            {% if user.role == 'TEACHER' %}
+            <div class="class-code-display">
+                <strong>Class Code:</strong> <span class="code-badge">{{ class.class_code }}</span>
+                <small class="code-help">Share this code with students to join</small>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if user.role == 'TEACHER' %}
+        <div class="class-actions">
+            <a href="{% url 'edit_class' class.id %}" class="btn btn-secondary">Edit Class</a>
+            <a href="{% url 'delete_class' class.id %}" class="btn btn-danger">Archive</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if class.description %}
+    <div class="section">
+        <h3>About this Class</h3>
+        <p>{{ class.description }}</p>
+    </div>
+    {% endif %}
+
+    {% if announcements %}
+    <div class="section">
+        <h2>📢 Announcements</h2>
+        <div class="announcements-list">
+            {% for announcement in announcements %}
+            <div class="announcement-item {% if announcement.is_pinned %}pinned{% endif %}">
+                {% if announcement.is_pinned %}<span class="pin-badge">📌 Pinned</span>{% endif %}
+                <h4>{{ announcement.title }}</h4>
+                <p>{{ announcement.content }}</p>
+                <small>Posted {{ announcement.created_at|timesince }} ago</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="class-content-grid">
+        <div class="content-column">
+            <div class="section">
+                <div class="section-header">
+                    <h2>📚 Lessons</h2>
+                    {% if user.role == 'TEACHER' %}
+                    <a href="{% url 'create_lesson' class.id %}" class="btn btn-primary btn-sm">+ Add Lesson</a>
+                    {% endif %}
+                </div>
+                {% if lessons %}
+                <div class="lessons-list">
+                    {% for lesson in lessons %}
+                    <a href="{% url 'lesson_detail' lesson.id %}" class="lesson-link">
+                        <div class="lesson-item">
+                            <h4>{{ lesson.title }}</h4>
+                            <p class="lesson-preview">{{ lesson.description|truncatewords:20 }}</p>
+                            <small>Posted {{ lesson.created_at|timesince }} ago</small>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">No lessons yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="content-column">
+            <div class="section">
+                <div class="section-header">
+                    <h2>📝 Assignments</h2>
+                    {% if user.role == 'TEACHER' %}
+                    <a href="{% url 'create_assignment' class.id %}" class="btn btn-primary btn-sm">+ Add Assignment</a>
+                    {% endif %}
+                </div>
+                {% if assignments %}
+                <div class="assignments-list">
+                    {% for assignment in assignments %}
+                    <a href="{% url 'assignment_detail' assignment.id %}" class="assignment-link">
+                        <div class="assignment-item {% if assignment.is_overdue %}overdue{% endif %}">
+                            <h4>{{ assignment.title }}</h4>
+                            <p class="due-date">
+                                Due: {{ assignment.due_date|date:"M d, Y h:i A" }}
+                                {% if assignment.is_overdue %}<span class="overdue-badge">Overdue</span>{% endif %}
+                            </p>
+                            <p class="points">{{ assignment.max_points }} points</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state">No assignments yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if user.role == 'TEACHER' and members %}
+    <div class="section">
+        <h2>👥 Class Members ({{ members.count }})</h2>
+        <div class="members-grid">
+            {% for enrollment in members %}
+            <div class="member-card">
+                <strong>{{ enrollment.student.get_full_name }}</strong>
+                <small>{{ enrollment.student.email }}</small>
+                <small class="join-date">Joined {{ enrollment.enrolled_at|date:"M d, Y" }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

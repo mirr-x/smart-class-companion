@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Archive Class - Smart Class Companion{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Archive Class</h1>
+        <p class="subtitle warning-text">Are you sure you want to archive "{{ class.name }}"?</p>
+
+        <div class="warning-box">
+            <p><strong>⚠️ Warning:</strong> This will hide the class from all members. You can reactivate it later from
+                the admin panel.</p>
+        </div>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-actions">
+                <a href="{% url 'class_detail' class.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-danger">Archive Class</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

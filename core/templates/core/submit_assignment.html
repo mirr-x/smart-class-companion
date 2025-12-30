@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Submit {{ assignment.title }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Submit Assignment</h1>
+        <p class="subtitle">{{ assignment.title }}</p>
+
+        {% if existing_submission %}
+        <div class="info-box">
+            <p><strong>ℹ️ Note:</strong> You have already submitted this assignment.
+                {% if assignment.allow_late_submission %}
+                You can resubmit your work below (late submission allowed).
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="assignment-info-box">
+            <p><strong>Due:</strong> {{ assignment.due_date|date:"M d, Y h:i A" }}</p>
+            <p><strong>Points:</strong> {{ assignment.max_points }}</p>
+            {% if assignment.is_overdue %}
+            <p class="warning-text"><strong>⚠️ This assignment is overdue!</strong></p>
+            {% endif %}
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.file.id_for_label }}">Upload Your Work *</label>
+                {{ form.file }}
+                <small class="form-help">Supported formats: PDF, Word, PowerPoint, Text, ZIP</small>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Submit Assignment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

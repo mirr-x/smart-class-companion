@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Edit {{ lesson.title }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Edit Lesson</h1>
+        <p class="subtitle">{{ lesson.title }}</p>
+
+        <form method="post" enctype="multipart/form-data" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Lesson Title *</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description/Content *</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.order.id_for_label }}">Order</label>
+                    {{ form.order }}
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        {{ form.is_published }}
+                        Published
+                    </label>
+                </div>
+            </div>
+
+            {% if files %}
+            <div class="form-group">
+                <label>Current Files</label>
+                <div class="current-files-list">
+                    {% for file in files %}
+                    <div class="file-row">
+                        <span>{{ file.file_name }} ({{ file.file_size|filesizeformat }})</span>
+                        <a href="{% url 'delete_lesson_file' file.id %}" class="btn-delete-file"
+                            onclick="return confirm('Delete this file?')">×</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="files">Add More Files (optional)</label>
+                <input type="file" name="files" id="files" multiple>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

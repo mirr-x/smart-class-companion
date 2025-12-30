@@ -1,0 +1,14 @@
+"""
+Smart Class Companion - Core App Configuration
+"""
+from django.apps import AppConfig
+
+
+class CoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'core'
+    verbose_name = 'Smart Class Core'
+
+    def ready(self):
+        """Import signals if needed"""
+        pass

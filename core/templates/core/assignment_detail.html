@@ -1,0 +1,113 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ assignment.title }} - Smart Class Companion{% endblock %}
+
+{% block content %}
+<div class="assignment-container">
+    <div class="assignment-header">
+        <div>
+            <nav class="breadcrumb">
+                <a href="{% url 'class_detail' class.id %}">{{ class.name }}</a> / Assignment
+            </nav>
+            <h1>{{ assignment.title }}</h1>
+            <div class="assignment-meta">
+                <span class="due-date-badge {% if assignment.is_overdue %}overdue{% endif %}">
+                    Due: {{ assignment.due_date|date:"M d, Y h:i A" }}
+                    {% if assignment.is_overdue %} (Overdue){% endif %}
+                </span>
+                <span class="points-badge">{{ assignment.max_points }} points</span>
+            </div>
+        </div>
+
+        {% if user.role == 'TEACHER' %}
+        <div class="assignment-actions">
+            <a href="{% url 'edit_assignment' assignment.id %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'delete_assignment' assignment.id %}" class="btn btn-danger">Delete</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="assignment-content">
+        <div class="section">
+            <h3>Instructions</h3>
+            <div class="assignment-description">
+                {{ assignment.description|linebreaks }}
+            </div>
+        </div>
+
+        {% if user.role == 'STUDENT' %}
+        {% if submissions %}
+        {% for submission in submissions %}
+        <div class="section">
+            <h3>Your Submission</h3>
+            <div class="submission-info">
+                <p><strong>Status:</strong>
+                    <span class="status-badge status-{{ submission.status|lower }}">
+                        {{ submission.get_status_display }}
+                    </span>
+                </p>
+                <p><strong>Submitted:</strong> {{ submission.submitted_at|date:"M d, Y h:i A" }}</p>
+                {% if submission.file %}
+                <p><strong>File:</strong> <a href="{{ submission.file.url }}" download>{{ submission.file.name }}</a>
+                </p>
+                {% endif %}
+                {% if submission.is_graded %}
+                <div class="grade-display">
+                    <p><strong>Grade:</strong> {{ submission.points_earned }}/{{ assignment.max_points }}
+                        ({{ submission.get_percentage }}%)</p>
+                    {% if submission.feedback %}
+                    <div class="feedback-box">
+                        <strong>Teacher Feedback:</strong>
+                        <p>{{ submission.feedback }}</p>
+                    </div>
+                    {% endif %}
+                    <p><small>Graded {{ submission.graded_at|timesince }} ago</small></p>
+                </div>
+                {% else %}
+                <p class="pending-grade">Pending grading</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="section">
+            <h3>Submit Your Work</h3>
+            <a href="{% url 'submit_assignment' assignment.id %}" class="btn btn-primary">Submit Assignment</a>
+        </div>
+        {% endif %}
+        {% elif user.role == 'TEACHER' %}
+        <div class="section">
+            <h3>Submissions ({{ submissions.count }})</h3>
+            {% if submissions %}
+            <div class="submissions-list">
+                {% for submission in submissions %}
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <strong>{{ submission.student.get_full_name }}</strong>
+                        <span class="status-badge status-{{ submission.status|lower }}">
+                            {{ submission.get_status_display }}
+                        </span>
+                    </div>
+                    <p>Submitted: {{ submission.submitted_at|date:"M d, Y h:i A" }}</p>
+                    {% if submission.file %}
+                    <p><a href="{{ submission.file.url }}" download class="btn btn-sm btn-secondary">Download File</a>
+                    </p>
+                    {% endif %}
+                    {% if submission.is_graded %}
+                    <p class="grade-info">Grade: {{ submission.points_earned }}/{{ assignment.max_points }} ({{
+                        submission.get_percentage }}%)</p>
+                    {% else %}
+                    <a href="{% url 'grade_submission' submission.id %}" class="btn btn-sm btn-primary">Grade</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-state">No submissions yet.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

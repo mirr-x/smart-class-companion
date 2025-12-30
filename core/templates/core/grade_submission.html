@@ -1,0 +1,53 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Grade Submission{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h1>Grade Submission</h1>
+
+        <div class="submission-preview">
+            <div class="student-info">
+                <h3>{{ submission.student.get_full_name }}</h3>
+                <p>{{ assignment.title }}</p>
+            </div>
+
+            <div class="submission-details">
+                <p><strong>Submitted:</strong> {{ submission.submitted_at|date:"M d, Y h:i A" }}</p>
+                <p><strong>Status:</strong>
+                    <span class="status-badge status-{{ submission.status|lower }}">
+                        {{ submission.get_status_display }}
+                    </span>
+                </p>
+                {% if submission.file %}
+                <p><strong>File:</strong> <a href="{{ submission.file.url }}" download
+                        class="btn btn-sm btn-secondary">Download</a></p>
+                {% endif %}
+            </div>
+        </div>
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="points">Points Earned * (Max: {{ submission.assignment.max_points }})</label>
+                <input type="number" name="points" id="points" min="0" max="{{ submission.assignment.max_points }}"
+                    value="{{ submission.points|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="feedback">Feedback (optional)</label>
+                <textarea name="feedback" id="feedback" rows="5"
+                    placeholder="Provide feedback to the student...">{{ submission.feedback|default:'' }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'assignment_detail' submission.assignment.id %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Grade</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

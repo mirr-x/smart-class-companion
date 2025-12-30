@@ -1,0 +1,13 @@
+# Requirements for Smart Class Companion
+# Django and core dependencies
+Django==4.2.25
+oracledb>=2.0.0
+Pillow>=10.0.0
+
+# For production deployment (optional)
+gunicorn>=21.2.0
+whitenoise>=6.5.0
+python-dotenv>=1.0.0
+
+# For development and testing
+coverage>=7.0.0
