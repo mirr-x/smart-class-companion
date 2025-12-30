@@ -39,71 +39,55 @@ A comprehensive Learning Management System (LMS) built with Django and Oracle Da
 - Oracle Instant Client
 - pip (Python package manager)
 
-## 🚀 Quick Start
+## 🚀 Quick Start (All Platforms)
 
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd schoo_project
-```
+### 🪟 Windows Setup
 
-### 2. Set Up Oracle Instant Client
+**Option 1: PowerShell (Recommended)**
+1. Right-click `setup.ps1` and select **"Run with PowerShell"**
+2. If prompted about execution policy, type `Y` and press Enter
+3. Follow the on-screen prompts
 
-Download Oracle Instant Client from [Oracle's website](https://www.oracle.com/database/technologies/instant-client/downloads.html)
+**Option 2: Batch File**
+1. Double-click `setup.bat`
+2. Follow the prompts in the terminal window
 
-```bash
-# Extract to a directory (e.g., /opt/oracle/instantclient_23_6)
-unzip instantclient-basic-linux.x64-23.6.0.24.10.zip -d /opt/oracle/
-
-# Add to your shell configuration (~/.bashrc or ~/.zshrc)
-export LD_LIBRARY_PATH=/opt/oracle/instantclient_23_6:$LD_LIBRARY_PATH
-export PATH=/opt/oracle/instantclient_23_6:$PATH
-
-# Reload configuration
-source ~/.bashrc  # or source ~/.zshrc
-```
-
-### 3. Install Python Dependencies
-
-```bash
-pip install django==4.2.25
-pip install oracledb
-pip install Pillow
-```
-
-### 4. Configure Database
-
-Create `.env` file in project root or set environment variables:
-
-```bash
-export USE_ORACLE=true
-export ORACLE_DB_NAME="your_db_name"
-export ORACLE_USER="your_username"
-export ORACLE_PASSWORD="your_password"
-export ORACLE_HOST="localhost"
-export ORACLE_PORT="1521"
-```
-
-**Alternative**: Edit `smartclass/settings.py` directly (not recommended for production)
-
-### 5. Run Migrations
-
-```bash
-python manage.py makemigrations
+**Option 3: Manual Command Line**
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
 python manage.py migrate
-```
-
-### 6. Create Superuser
-
-```bash
 python manage.py createsuperuser
-```
-
-### 7. Run Development Server
-
-```bash
 python manage.py runserver
 ```
+
+### 🐧 Linux / 🍎 MacOS Setup
+
+**Automated Setup:**
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+**Manual Setup:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+### What the Setup Script Does
+- Checks for Python installation
+- Creates a virtual environment (venv)
+- Installs all dependencies
+- Configures the database (Oracle or SQLite)
+- Runs database migrations
+- Creates an admin superuser (optional)
+- Starts the development server
 
 Visit `http://localhost:8000` in your browser.
 
