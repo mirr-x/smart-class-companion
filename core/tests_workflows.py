@@ -26,7 +26,7 @@ class TeacherWorkflowTest(TestCase):
             'username': 'teacher_workflow',
             'email': 'teacher@workflow.com',
             'password': 'testpass123',
-            'confirm_password': 'testpass123',
+            'password_confirm': 'testpass123',
             'role': 'TEACHER',
             'first_name': 'Workflow',
             'last_name': 'Teacher'
@@ -62,7 +62,8 @@ class TeacherWorkflowTest(TestCase):
             {
                 'title': 'Introduction to Calculus',
                 'description': 'This lesson covers basic calculus concepts',
-                'is_published': True
+                'is_published': True,
+                'order': 1
             }
         )
         self.assertEqual(response.status_code, 302)
@@ -166,7 +167,7 @@ class StudentWorkflowTest(TestCase):
             'username': 'student_workflow',
             'email': 'student@workflow.com',
             'password': 'testpass123',
-            'confirm_password': 'testpass123',
+            'password_confirm': 'testpass123',
             'role': 'STUDENT',
             'first_name': 'Workflow',
             'last_name': 'Student'

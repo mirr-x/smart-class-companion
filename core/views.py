@@ -95,7 +95,7 @@ def dashboard_view(request):
 
 def teacher_dashboard(request):
     """Teacher dashboard showing classes and stats"""
-    classes = Class.objects.filter(teacher=request.user, is_active=True).annotate(
+    classes = Class.objects.filter(teacher=request.user, is_active=True).defer('description').annotate(
         student_count=Count('enrollments', filter=Q(enrollments__is_active=True)),
         assignment_count=Count('assignments', filter=Q(assignments__is_published=True))
     )
@@ -360,68 +360,18 @@ def lesson_detail(request, lesson_id):
     # Check access
     today = timezone.now()
     
+    # Remove incorrect dashboard logic that was blocking this view
+    # The view should show the lesson detail, regardless of role (as long as they have access)
+    
+    # Check access permissions
     if request.user.role == 'TEACHER':
-        classes = Class.objects.filter(teacher=request.user, is_active=True).annotate(
-            student_count=Count('enrollments', filter=Q(enrollments__is_active=True)),
-            assignment_count=Count('assignments', filter=Q(assignments__is_published=True))
-        )
-        
-        # Get pending actions
-        # 1. Submissions needing grading
-        pending_grading = Submission.objects.filter(
-            assignment__class_assignment__teacher=request.user,
-            points__isnull=True
-        ).count()
-        
-        # 2. Unanswered questions
-        unanswered_questions = Question.objects.filter(
-            lesson__class_lesson__teacher=request.user,
-            answer__isnull=True
-        ).count()
-        
-        # 3. Recent activity (last 5 submissions)
-        recent_submissions = Submission.objects.filter(
-            assignment__class_assignment__teacher=request.user
-        ).select_related('student', 'assignment', 'assignment__class_assignment').order_by('-submitted_at')[:5]
-        
-        context = {
-            'classes': classes,
-            'pending_grading': pending_grading,
-            'unanswered_questions': unanswered_questions,
-            'recent_submissions': recent_submissions,
-        }
-        return render(request, 'core/teacher_dashboard.html', context)
-        
+        if class_obj.teacher != request.user:
+             messages.error(request, 'Access denied.')
+             return redirect('dashboard')
     elif request.user.role == 'STUDENT':
-        active_enrollments = Enrollment.objects.filter(student=request.user, is_active=True).select_related('class_enrolled', 'class_enrolled__teacher')
-        
-        # Get all published assignments from enrolled classes
-        all_assignments = Assignment.objects.filter(
-            class_assignment__enrollments__student=request.user,
-            class_assignment__enrollments__is_active=True,
-            is_published=True
-        ).exclude(
-            submissions__student=request.user  # Exclude already submitted
-        )
-        
-        # Upgrade: Filter for upcoming and missing
-        upcoming_assignments = all_assignments.filter(due_date__gte=today).order_by('due_date')[:5]
-        missing_assignments = all_assignments.filter(due_date__lt=today).order_by('due_date')
-        
-        # Recent lessons from enrolled classes
-        recent_lessons = Lesson.objects.filter(
-            class_lesson__enrollments__student=request.user,
-            class_lesson__enrollments__is_active=True,
-            is_published=True
-        ).select_related('class_lesson').order_by('-created_at')[:5]
-        
-        context = {
-            'enrollments': active_enrollments,
-            'upcoming_assignments': upcoming_assignments,
-            'missing_assignments': missing_assignments,
-            'recent_lessons': recent_lessons,
-        }
-        return render(request, 'core/student_dashboard.html', context)
+        if not Enrollment.objects.filter(student=request.user, class_enrolled=class_obj, is_active=True).exists():
+             messages.error(request, 'You are not enrolled in this class.')
+             return redirect('dashboard')
     
     # Get lesson files and questions
     files = lesson.files.all().order_by('-uploaded_at')

@@ -13,12 +13,23 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
-# Oracle DB compatibility for Django < 5.0
+# Oracle DB compatibility
 try:
     import oracledb
-    oracledb.install_as_cx_Oracle()
+    import sys
+    # Django 4.2 expects cx_Oracle
+    sys.modules["cx_Oracle"] = oracledb
 except ImportError:
     pass
+
+# Patch Django to allow Oracle 18c (Django 4.2 strictly requires 19c+)
+try:
+    from django.db.backends.oracle.base import DatabaseWrapper
+    DatabaseWrapper.check_database_version_supported = lambda self: None
+except ImportError:
+    pass
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,11 +102,9 @@ if USE_ORACLE:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.oracle',
-            'NAME': os.getenv('ORACLE_DB_NAME', 'XE'),  # Service name
+            'NAME': f"//{os.getenv('ORACLE_DB_HOST', 'localhost')}:{os.getenv('ORACLE_DB_PORT', '1521')}/{os.getenv('ORACLE_DB_NAME', 'XE')}",
             'USER': os.getenv('ORACLE_DB_USER', 'system'),
             'PASSWORD': os.getenv('ORACLE_DB_PASSWORD', 'oracle'),
-            'HOST': os.getenv('ORACLE_DB_HOST', 'localhost'),
-            'PORT': os.getenv('ORACLE_DB_PORT', '1521'),
         }
     }
 else:

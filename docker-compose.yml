@@ -9,9 +9,9 @@ services:
       - USE_ORACLE=true
       - ORACLE_DB_HOST=oracle
       - ORACLE_DB_PORT=1521
-      - ORACLE_DB_NAME=XE
-      - ORACLE_DB_USER=system
-      - ORACLE_DB_PASSWORD=oracle
+      - ORACLE_DB_NAME=xepdb1
+      - ORACLE_DB_USER=smartclass_user
+      - ORACLE_DB_PASSWORD=smartclass_pass
       - DJANGO_SECRET_KEY=django-insecure-docker-dev-key
       - DEBUG=True
     depends_on:
@@ -19,11 +19,13 @@ services:
         condition: service_healthy
 
   oracle:
-    image: gvenzl/oracle-xe:21-slim-faststart
+    image: gvenzl/oracle-xe:18-slim-faststart
     ports:
       - "1521:1521"
     environment:
       - ORACLE_PASSWORD=oracle
+      - APP_USER=smartclass_user
+      - APP_USER_PASSWORD=smartclass_pass
     volumes:
       - oracle_data:/opt/oracle/oradata
     healthcheck:

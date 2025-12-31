@@ -14,7 +14,7 @@ WORKDIR /app
 # netcat/curl for checking db readiness if we add a wait-for-it script later.
 RUN apt-get update && apt-get install -y \
     gettext \
-    libaio1 \
+    libaio1t64 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
