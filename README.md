@@ -1,4 +1,6 @@
 # Smart Class Companion
+![Smart Class Companion](assets/2.jpeg)
+![Smart Class Companion](assets/4.jpeg)
 
 A comprehensive Classroom Management System built with Django and Oracle Database.
 
