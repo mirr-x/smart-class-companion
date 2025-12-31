@@ -1,375 +1,92 @@
 # Smart Class Companion
 
-A comprehensive Learning Management System (LMS) built with Django and Oracle Database, designed to facilitate online education through class management, assignments, lessons, and interactive Q&A.
+A comprehensive Classroom Management System built with Django and Oracle Database.
 
-![Django](https://img.shields.io/badge/Django-4.2.25-green.svg)
-![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
-![Oracle](https://img.shields.io/badge/Database-Oracle-red.svg)
-![Tests](https://img.shields.io/badge/Tests-88%25%20Passing-brightgreen.svg)
+## Overview
+Smart Class Companion is a web application designed to facilitate interaction between teachers and students. It allows teachers to create classes, post lessons, assign homework, and grade submissions, while students can join classes, access materials, submit work, and ask questions.
 
-## 🌟 Features
+## Features
+*   **Role-Based Access Control**: Distinct interfaces for Teachers and Students.
+*   **Class Management**: Create, edit, and archive classes. Enroll students via unique class codes.
+*   **Lesson Planning**: Organize content into lessons with file attachments (PDF, PPT, etc.).
+*   **Assignment System**: Create assignments with due dates, accept file submissions, and provide grading/feedback.
+*   **Q&A Module**: Contextual Q&A threads attached to specific lessons.
+*   **Teacher Dashboard**: Analytics on student enrollment, pending grading, and recent activity.
+*   **Student Dashboard**: Overview of upcoming deadlines, missing work, and recent lessons.
 
-### For Teachers
-- **Class Management**: Create and manage multiple classes with unique join codes
-- **Lesson Creation**: Upload teaching materials and organize lessons
-- **Assignment System**: Create assignments with due dates and point values
-- **Grading**: Review and grade student submissions with feedback
-- **Q&A Management**: Answer student questions on lessons
-- **Dashboard**: Track pending grading, unanswered questions, and class statistics
+## Tech Stack
+*   **Backend**: Django 4.2 (Python 3.13)
+*   **Database**: Oracle Database 18c XE (Dockerized)
+*   **Containerization**: Docker & Docker Compose
+*   **Frontend**: Bootstrap 5, Custom CSS
 
-### For Students
-- **Class Enrollment**: Join classes using unique codes
-- **Access Lessons**: View and download lesson materials
-- **Submit Assignments**: Upload assignment submissions before deadlines
-- **Q&A Participation**: Ask questions on lessons and view answers
-- **Dashboard**: Track upcoming assignments, deadlines, and recent lessons
+## Prerequisites
+*   Docker
+*   Docker Compose
 
-### Security Features
-- Role-based access control (Teacher/Student)
-- File upload validation (type and size restrictions)
-- CSRF protection
-- SQL injection protection (Django ORM)
-- Session-based authentication
+## Quick Start
 
-## 📋 Requirements
+1.  **Start the Application**:
+    Run the helper script to build and start the containers:
+    ```bash
+    ./docker-start.sh
+    # OR
+    docker compose up -d --build
+    ```
+    *Note: The first run may take a few minutes as the Oracle Database initializes and creates the user.*
 
-- Python 3.8+
-- Django 4.2.25
-- Oracle Database 19c or later
-- Oracle Instant Client
-- pip (Python package manager)
+2.  **Access the App**:
+    Open your browser to [http://localhost:8000](http://localhost:8000).
 
-## 🚀 Quick Start (All Platforms)
+3.  **Default Admin Credentials**:
+    *   **Username**: `admin`
+    *   **Password**: `adminpass`
+    *   **Admin Panel**: [http://localhost:8000/admin](http://localhost:8000/admin)
 
-### 🪟 Windows Setup
+## Database Configuration
 
-**Option 1: PowerShell (Recommended)**
-1. Right-click `setup.ps1` and select **"Run with PowerShell"**
-2. If prompted about execution policy, type `Y` and press Enter
-3. Follow the on-screen prompts
+The application uses an **Oracle Database 18c XE** container.
+*   **Service Name**: `xepdb1`
+*   **User**: `smartclass_user`
+*   **Password**: `smartclass_pass`
+*   **Port**: `1521` (Mapped to host)
 
-**Option 2: Batch File**
-1. Double-click `setup.bat`
-2. Follow the prompts in the terminal window
+To connect to the database from your host machine (e.g., using DBeaver or SQL Developer):
+*   **Host**: `localhost`
+*   **Port**: `1521`
+*   **Database/Service**: `xepdb1`
+*   **Username**: `smartclass_user`
+*   **Password**: `smartclass_pass`
 
-**Option 3: Manual Command Line**
-```cmd
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
-```
+## Running Tests
 
-### 🐧 Linux / 🍎 MacOS Setup
+The project includes a comprehensive test suite covering all workflows and CRUD operations.
 
-**Automated Setup:**
+To run the tests inside the container:
 ```bash
-chmod +x setup.sh
-./setup.sh
+docker compose exec web python manage.py test core
 ```
 
-**Manual Setup:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+## Troubleshooting
+
+*   **Database Connection Failed**: Ensure the Oracle container is healthy (`docker ps`). If it's the first run, it might still be setting up.
+*   **Oracle Error ORA-00932**: This project includes patches to handle Oracle CLOB/NCLOB datatypes with Django's `annotate` function. Ensure you are using the provided `views.py`.
+*   **Disk Space**: The Oracle image is large. Ensure you have at least 10GB of free disk space.
+
+## Project Structure
 ```
-
-### What the Setup Script Does
-- Checks for Python installation
-- Creates a virtual environment (venv)
-- Installs all dependencies
-- Configures the database (Oracle or SQLite)
-- Runs database migrations
-- Creates an admin superuser (optional)
-- Starts the development server
-
-Visit `http://localhost:8000` in your browser.
-
-## 📖 User Guide
-
-### For Teachers
-
-#### 1. Register and Login
-- Navigate to the registration page
-- Select "Teacher" role
-- Complete registration and login
-
-#### 2. Create a Class
-- Click "Create Class" from dashboard
-- Enter class name, subject, and description
-- A unique 6-character code will be generated
-- Share this code with students
-
-#### 3. Add Lessons
-- Navigate to your class
-- Click "Add Lesson"
-- Enter title and description
-- Upload files (optional)
-- Publish the lesson
-
-#### 4. Create Assignments
-- Go to class detail page
-- Click "Add Assignment"
-- Set title, description, due date, and max points
-- Publish the assignment
-
-#### 5. Grade Submissions
-- View assignment details
-- Click on student submissions
-- Enter points (0 to max points)
-- Provide feedback
-- Save grade
-
-#### 6. Answer Questions
-- View lesson details
-- See student questions in Q&A section
-- Click "Answer" and provide response
-
-### For Students
-
-#### 1. Register and Login
-- Navigate to registration page
-- Select "Student" role
-- Complete registration and login
-
-#### 2. Join a Class
-- Click "Join Class" from dashboard
-- Enter the 6-character code from your teacher
-- Confirm enrollment
-
-#### 3. View Lessons
-- Navigate to your class
-- Click on any lesson to view
-- Download attached files
-
-#### 4. Submit Assignments
-- Go to assignment detail page
-- Upload your work
-- Add optional note
-- Click "Submit"
-
-#### 5. Ask Questions
-- View any lesson
-- Scroll to Q&A section
-- Enter your question
-- Submit
-
-## 🧪 Testing
-
-The project includes comprehensive test coverage:
-
-```bash
-# Run all tests
-python manage.py test core
-
-# Run specific test modules
-python manage.py test core.tests_models      # Model tests (100% passing)
-python manage.py test core.tests_views       # View tests
-python manage.py test core.tests_workflows   # Integration tests
-
-# Run with verbose output
-python manage.py test core --verbosity=2
-```
-
-**Test Coverage**: 88% (37/42 tests passing)
-- ✅ Model tests: 18/18 (100%)
-- ✅ View tests: 13/15 (87%)
-- ✅ Workflow tests: 6/9 (67%)
-
-## 📁 Project Structure
-
-```
-schoo_project/
-├── smartclass/              # Project settings
-│   ├── settings.py         # Main configuration
-│   ├── urls.py             # Root URL configuration
-│   └── wsgi.py             # WSGI application
-├── core/                    # Main application
+smart-class-companion/
+├── core/                   # Main application app
 │   ├── models.py           # Database models
 │   ├── views.py            # View logic
-│   ├── forms.py            # Form definitions
-│   ├── validators.py       # File validators
-│   ├── decorators.py       # Custom decorators
-│   ├── admin.py            # Django admin config
-│   ├── tests_models.py     # Model tests
-│   ├── tests_views.py      # View tests
-│   ├── tests_workflows.py  # Integration tests
-│   ├── templates/core/     # HTML templates
-│   └── static/core/        # CSS, JS, images
-├── media/                   # Uploaded files
-│   ├── submissions/        # Student submissions
-│   └── lesson_files/       # Lesson materials
-├── manage.py               # Django management script
-└── README.md               # This file
+│   ├── urls.py             # App URLs
+│   ├── forms.py            # Forms
+│   ├── tests_workflows.py  # End-to-end workflow tests
+│   └── tests_crud.py       # CRUD operation tests
+├── smartclass/             # Project configuration
+│   ├── settings.py         # Django settings (Oracle config here)
+│   └── urls.py             # Main URL routing
+├── Dockerfile              # Web container definition
+├── docker-compose.yml      # Service orchestration
+└── requirements.txt        # Python dependencies
 ```
-
-## 🗄️ Database Schema
-
-### Core Models
-
-**User** - Custom user with role field (TEACHER/STUDENT)
-- username, email, password, role, first_name, last_name
-
-**Class** - Represents a course/class
-- name, subject, description, teacher, class_code (unique)
-
-**Enrollment** - Student enrollment in classes
-- student, class_enrolled, enrolled_at
-
-**Lesson** - Learning materials
-- class, title, description, order, is_published
-
-**LessonFile** - Files attached to lessons
-- lesson, file, file_name
-
-**Assignment** - Tasks for students
-- class, title, description, due_date, max_points
-
-**Submission** - Student assignment submissions
-- assignment, student, file, points, feedback, status
-
-**Question** - Student questions on lessons
-- lesson, student, question_text
-
-**Answer** - Teacher answers to questions
-- question, teacher, answer_text
-
-## 🔒 Security Notes
-
-### File Upload Protection
-- Allowed extensions: PDF, DOC, DOCX, PPT, PPTX, TXT, ZIP, JPG, JPEG, PNG
-- Maximum file size: 10MB
-- Files stored outside web root
-
-### Authentication
-- Session-based authentication
-- Password hashing (Django defaults)
-- CSRF protection enabled
-
-### Access Control
-- `@teacher_required` decorator for teacher-only views
-- `@student_required` decorator for student-only views
-- Object-level permissions (users can only modify their own content)
-
-## 🎨 Customization
-
-### Changing Allowed File Types
-
-Edit `core/validators.py`:
-
-```python
-ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx', ...]  # Add your extensions
-```
-
-### Modifying File Size Limit
-
-Edit `core/validators.py`:
-
-```python
-MAX_FILE_SIZE = 10 * 1024 * 1024  # Change to your desired size in bytes
-```
-
-### Styling
-
-Static files are in `core/static/core/css/style.css`. Modify to customize appearance.
-
-## 🐛 Troubleshooting
-
-### Oracle Connection Issues
-```
-Error: DPI-1047: Cannot locate a 64-bit Oracle Client library
-```
-**Solution**: Install Oracle Instant Client and set `LD_LIBRARY_PATH`
-
-### Migration Errors
-```
-Error: table already exists
-```
-**Solution**: 
-```bash
-python manage.py migrate --fake-initial
-```
-
-### File Upload Not Working
-**Check**:
-1. `MEDIA_ROOT` and `MEDIA_URL` in settings.py
-2. File permissions on media directory
-3. File size and extension validators
-
-## 📊 Admin Panel
-
-Access Django admin at `http://localhost:8000/admin/`
-
-Features:
-- Manage users, classes, assignments
-- View submissions and questions
-- Moderate content
-- Generate reports
-
-## 🚀 Deployment
-
-### For Production
-
-1. **Update settings.py**:
-```python
-DEBUG = False
-ALLOWED_HOSTS = ['your-domain.com']
-SECRET_KEY = 'your-secret-key-here'  # Use environment variable
-```
-
-2. **Collect static files**:
-```bash
-python manage.py collectstatic
-```
-
-3. **Use production server** (Gunicorn, uWSGI):
-```bash
-pip install gunicorn
-gunicorn smartclass.wsgi:application --bind 0.0.0.0:8000
-```
-
-4. **Set up reverse proxy** (Nginx, Apache)
-
-5. **Use environment variables** for sensitive data
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Write/update tests
-5. Submit a pull request
-
-## 📝 License
-
-This project is for educational purposes.
-
-## 👥 Authors
-
-- Project Team
-
-## 🙏 Acknowledgments
-
-- Django Framework
-- Oracle Database
-- Contributors and testers
-
-## 📞 Support
-
-For issues and questions:
-- Check the documentation
-- Run tests: `python manage.py test core`
-- Review error logs
-
----
-
-**Version**: 1.0.0  
-**Last Updated**: December 30, 2025  
-**Django Version**: 4.2.25  
-**Python Version**: 3.x
