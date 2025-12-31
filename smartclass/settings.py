@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -74,8 +75,6 @@ WSGI_APPLICATION = 'smartclass.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-import os
 
 # Oracle Database Configuration
 # To use Oracle, set USE_ORACLE=true in environment
