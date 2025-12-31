@@ -2,8 +2,8 @@
 
 // Auto-hide messages after 5 seconds
 document.addEventListener('DOMContentLoaded', function () {
+    // Message auto-hide
     const messages = document.querySelectorAll('.alert');
-
     messages.forEach(message => {
         setTimeout(() => {
             message.style.transition = 'opacity 0.5s';
@@ -11,6 +11,19 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => message.remove(), 500);
         }, 5000);
     });
+
+    // Theme Toggle
+    const toggleBtn = document.getElementById('theme-toggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            toggleBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+    }
 });
 
 // Form validation helper

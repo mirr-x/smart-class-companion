@@ -16,6 +16,17 @@
         <div class="container">
             <a href="{% url 'home' %}" class="logo">Smart Class Companion</a>
             <ul class="nav-menu">
+                <li>
+                    <button id="theme-toggle" class="btn btn-sm" style="background: transparent; border: 1px solid var(--border); color: var(--text);">
+                        🌙
+                    </button>
+                    <script>
+                        // Apply saved theme immediately
+                        const savedTheme = localStorage.getItem('theme') || 'light';
+                        document.documentElement.setAttribute('data-theme', savedTheme);
+                        document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+                    </script>
+                </li>
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                 <li><span class="user-info">{{ user.get_full_name }} ({{ user.get_role_display }})</span></li>
