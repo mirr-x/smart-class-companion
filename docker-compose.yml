@@ -1,0 +1,37 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - USE_ORACLE=true
+      - ORACLE_DB_HOST=oracle
+      - ORACLE_DB_PORT=1521
+      - ORACLE_DB_NAME=XE
+      - ORACLE_DB_USER=system
+      - ORACLE_DB_PASSWORD=oracle
+      - DJANGO_SECRET_KEY=django-insecure-docker-dev-key
+      - DEBUG=True
+    depends_on:
+      oracle:
+        condition: service_healthy
+
+  oracle:
+    image: gvenzl/oracle-xe:21-slim-faststart
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PASSWORD=oracle
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 2m
+
+volumes:
+  oracle_data:
