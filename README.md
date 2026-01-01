@@ -1,4 +1,6 @@
 # Smart Class Companion
+![Smart Class Companion](assets/2.jpeg)
+![Smart Class Companion](assets/4.jpeg)
 
 A comprehensive Classroom Management System built with Django and Oracle Database.
 
@@ -67,11 +69,6 @@ To run the tests inside the container:
 docker compose exec web python manage.py test core
 ```
 
-## Troubleshooting
-
-*   **Database Connection Failed**: Ensure the Oracle container is healthy (`docker ps`). If it's the first run, it might still be setting up.
-*   **Oracle Error ORA-00932**: This project includes patches to handle Oracle CLOB/NCLOB datatypes with Django's `annotate` function. Ensure you are using the provided `views.py`.
-*   **Disk Space**: The Oracle image is large. Ensure you have at least 10GB of free disk space.
 
 ## Project Structure
 ```
