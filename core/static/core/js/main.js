@@ -70,6 +70,7 @@ function initializeAnimations() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('fade-in');
+                entry.target.classList.remove('animate-hidden');
                 observer.unobserve(entry.target);
             }
         });
@@ -81,9 +82,26 @@ function initializeAnimations() {
     );
 
     animatedElements.forEach((element, index) => {
-        element.style.opacity = '0';
+        // Add class instead of inline style to prevent permanent invisibility
+        element.classList.add('animate-hidden');
         element.style.animationDelay = `${index * 50}ms`;
-        observer.observe(element);
+
+        // Check if element is already in viewport
+        const rect = element.getBoundingClientRect();
+        const isInViewport = (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+
+        // If already visible, show immediately without observer
+        if (isInViewport) {
+            element.classList.add('fade-in');
+            element.classList.remove('animate-hidden');
+        } else {
+            observer.observe(element);
+        }
     });
 }
 

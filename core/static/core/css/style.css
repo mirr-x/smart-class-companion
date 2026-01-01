@@ -1458,8 +1458,13 @@ h1, h2, h3, h4, h5, h6 {
 /* ==========================================
    UTILITY CLASSES
    ========================================== */
+.animate-hidden {
+    opacity: 0;
+}
+
 .fade-in {
     animation: fadeIn var(--transition-slow);
+    opacity: 1 !important;
 }
 
 .slide-down {
