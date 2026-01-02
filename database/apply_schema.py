@@ -311,9 +311,15 @@ END;
 """
 
 
-    user = os.getenv('ORACLE_USER', 'system')
-    password = os.getenv('ORACLE_PASSWORD', 'oracle')
-    dsn = f"{os.getenv('ORACLE_DB_HOST', 'localhost')}:{os.getenv('ORACLE_DB_PORT', '1521')}/{os.getenv('ORACLE_DB_NAME', 'XE')}"
+    user = os.getenv('ORACLE_DB_USER', 'system')
+    password = os.getenv('ORACLE_DB_PASSWORD', 'oracle')
+    
+    host = os.getenv('ORACLE_DB_HOST', 'localhost')
+    port = os.getenv('ORACLE_DB_PORT', '1521')
+    name = os.getenv('ORACLE_DB_NAME', 'XE')
+    
+    dsn = f"//{host}:{port}/{name}"
+
 
     try:
         connection = oracledb.connect(user=user, password=password, dsn=dsn)
