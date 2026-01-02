@@ -94,27 +94,16 @@ WSGI_APPLICATION = 'smartclass.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# Oracle Database Configuration
-# To use Oracle, set USE_ORACLE=true in environment
-USE_ORACLE = os.getenv('USE_ORACLE', 'false').lower() == 'true'
+# Oracle Database Configuration (Mandatory)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': f"//{os.getenv('ORACLE_DB_HOST', 'localhost')}:{os.getenv('ORACLE_DB_PORT', '1521')}/{os.getenv('ORACLE_DB_NAME', 'XE')}",
+        'USER': os.getenv('ORACLE_DB_USER', 'system'),
+        'PASSWORD': os.getenv('ORACLE_DB_PASSWORD', 'oracle'),
+    }
+}
 
-if USE_ORACLE:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.oracle',
-            'NAME': f"//{os.getenv('ORACLE_DB_HOST', 'localhost')}:{os.getenv('ORACLE_DB_PORT', '1521')}/{os.getenv('ORACLE_DB_NAME', 'XE')}",
-            'USER': os.getenv('ORACLE_DB_USER', 'system'),
-            'PASSWORD': os.getenv('ORACLE_DB_PASSWORD', 'oracle'),
-        }
-    }
-else:
-    # SQLite fallback for development/testing
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
 
 
 # Password validation

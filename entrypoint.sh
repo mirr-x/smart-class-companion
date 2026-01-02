@@ -1,8 +1,12 @@
 #!/bin/sh
 
-# Ensure database migrations are applied
-echo "Applying database migrations..."
-python manage.py migrate --noinput
+# Ensure Oracle database schema is applied
+echo "Applying COMPLETE PL/SQL schema to Oracle..."
+echo "Bypassing Django migration engine..."
+python database/apply_schema.py
+
+
+
 
 # Print the requested banner
 echo ""

@@ -6,8 +6,8 @@ services:
     volumes:
       - .:/app
     environment:
-      - USE_ORACLE=true
       - ORACLE_DB_HOST=oracle
+
       - ORACLE_DB_PORT=1521
       - ORACLE_DB_NAME=xepdb1
       - ORACLE_DB_USER=smartclass_user
