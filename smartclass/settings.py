@@ -45,7 +45,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-7v4a+mbn0l$^*e39j2w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', 'testserver']
+
 
 
 # Application definition
@@ -134,7 +135,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False  # Oracle thin client doesn't support named time zones
 
 
 # Static files (CSS, JavaScript, Images)
