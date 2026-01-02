@@ -107,13 +107,6 @@ def run_tests():
     print("   TESTING COMPLETE")
     print("="*50 + "\n")
 
+
 if __name__ == "__main__":
-    # Ensure apply_schema has been run
-    from database.apply_schema import apply_schema
-    try:
-        apply_schema()
-    except Exception as e:
-        print(f"Pre-test schema application failed: {e}")
-        # Continue anyway as tables might already exist
-    
     run_tests()
