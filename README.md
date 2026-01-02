@@ -32,8 +32,6 @@ Smart Class Companion is a web application designed to facilitate interaction be
     Run the helper script to build and start the containers:
     ```bash
     ./docker-start.sh
-    # OR
-    docker compose up -d --build
     ```
     *Note: The first run may take a few minutes as the Oracle Database initializes and creates the user.*
 
