@@ -7,7 +7,7 @@ A comprehensive Classroom Management System built with Django and Oracle Databas
 ## Overview
 Smart Class Companion is a web application designed to facilitate interaction between teachers and students. It allows teachers to create classes, post lessons, assign homework, and grade submissions, while students can join classes, access materials, submit work, and ask questions.
 
-## Features
+## Feature
 *   **Role-Based Access Control**: Distinct interfaces for Teachers and Students.
 *   **Class Management**: Create, edit, and archive classes. Enroll students via unique class codes.
 *   **Lesson Planning**: Organize content into lessons with file attachments (PDF, PPT, etc.).
