@@ -16,7 +16,7 @@ Smart Class Companion is a web application designed to facilitate interaction be
 *   **Teacher Dashboard**: Analytics on student enrollment, pending grading, and recent activity.
 *   **Student Dashboard**: Overview of upcoming deadlines, missing work, and recent lessons.
 
-## Tech Stack
+## Tech Stac
 *   **Backend**: Django 4.2 (Python 3.13)
 *   **Database**: Oracle Database 18c XE (Dockerized)
 *   **Containerization**: Docker & Docker Compose
