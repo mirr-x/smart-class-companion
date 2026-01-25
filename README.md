@@ -1,4 +1,4 @@
-fdr# Smart Class Companion
+urefdr# Smart Class Companion
 ![Smart Class Companion](assets/2.jpeg)
 ![Smart Class Companion](assets/4.jpeg)
 
