@@ -1,4 +1,4 @@
-# Smart Class Companion
+# Smart Class Companion ccc
 ![Smart Class Companion](assets/2.jpeg)
 ![Smart Class Companion](assets/4.jpeg)
 
